@@ -1,0 +1,8 @@
+.emacs.desktop
+.emacs.desktop.lock
+/elpa-*
+custom.el
+history
+projectile-bookmarks.eld
+savefile/
+var/
