@@ -2,6 +2,8 @@
 (tool-bar-mode -1)
 (toggle-scroll-bar -1)
 
+(add-to-list 'load-path (expand-file-name "local-packages" user-emacs-directory))
+
 ;; Add global consts
 (defconst *is-a-mac* (eq system-type 'darwin))
 (defconst samuel-savefile-dir (expand-file-name "savefile" user-emacs-directory))
@@ -12,17 +14,20 @@
   (global-set-key (kbd "s-s") 'save-buffer)
   (global-set-key (kbd "s-c") 'kill-ring-save)
   (global-set-key (kbd "s-v") 'yank)
-  (global-set-key (kbd "s-k") 'kill-this-buffer))
+  (global-set-key (kbd "s-k") 'kill-this-buffer)
+  (global-set-key (kbd "s-r") 'query-replace-regexp))
 
 ;; Change the default font for the current frame, as well as future frames
-(set-face-attribute 'default nil :font "Iosevka Term SS08-16" )
-(set-frame-font "Iosevka Term SS08-16" nil t)
-(dolist (charset '(kana han cjk-misc bopomofo))
-  (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))
-;; specify font for all unicode characters
-;; (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji" :size 13) nil 'prepend)
-(when (member "Symbola" (font-family-list))
-  (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+(if (member "Operator Mono" (font-family-list))
+    (progn
+      (add-to-list 'default-frame-alist '(font . "Operator Mono-16")))
+  (if (member "Iosevka Term SS08" (font-family-list))
+      (progn
+        (set-face-attribute 'default nil :font "Iosevka Term SS08-16")
+        (set-frame-font "Iosevka Term SS08-16" nil t)
+        (when (member "Sarasa Term SC" (font-family-list))
+          (dolist (charset '(kana han cjk-misc bopomofo))
+            (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))))))
 
 ;; reduce the frequency of garbage collection by making it happen on
 ;; each 50MB of allocated data (the default is on every 0.76MB)
@@ -149,7 +154,13 @@ Version 2017-06-26"
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-(global-set-key (kbd "M-o") 'switch-to-previous-buffer)
+(if (fboundp 'mode-line-other-buffer)
+    (global-set-key (kbd "M-o") 'mode-line-other-buffer)
+  (global-set-key (kbd "M-o") 'switch-to-previous-buffer))
+
+;; Change built-in major mode name in mode line
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq mode-name "ELisp")))
+(add-hook 'package-menu-mode-hook (lambda () (setq mode-name "PM")))
 
 ;; Set up package system and use-package
 (require 'package)
@@ -177,6 +188,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (setq use-package-always-ensure t)
 
 (use-package savehist
+  :ensure nil
   :config
   (setq savehist-additional-variables
         ;; search entries
@@ -188,6 +200,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (savehist-mode +1))
 
 (use-package recentf
+  :ensure nil
   :config
   (setq recentf-save-file (expand-file-name "recentf" samuel-savefile-dir)
         recentf-max-saved-items 500
@@ -198,6 +211,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (recentf-mode +1))
 
 (use-package ibuffer
+  :ensure nil
   :bind ("C-x C-b" . ibuffer)
   :init
   (setq ibuffer-show-empty-filter-groups nil)
@@ -222,10 +236,6 @@ Repeated invocations toggle between the two most recently open buffers."
                 " "
                 filename-and-process)))
   :config
-  (add-hook 'ibuffer-hook (lambda ()
-			    (ibuffer-vc-set-filter-groups-by-vc-root)
-			    (unless (eq ibuffer-sorting-mode 'filename/process)
-			      (ibuffer-do-sort-by-filename/process))))
   ;; Use human readable Size column instead of original one
   (define-ibuffer-column size-h
     (:name "Size" :inline t)
@@ -233,8 +243,14 @@ Repeated invocations toggle between the two most recently open buffers."
      ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
      ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
      (t (format "%8d" (buffer-size))))))
+
 (use-package ibuffer-vc
-  :after ibuffer)
+  :after ibuffer
+  :config
+  (add-hook 'ibuffer-hook (lambda ()
+			                      (ibuffer-vc-set-filter-groups-by-vc-root)
+			                      (unless (eq ibuffer-sorting-mode 'filename/process)
+			                        (ibuffer-do-sort-by-filename/process)))))
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
@@ -242,11 +258,11 @@ Repeated invocations toggle between the two most recently open buffers."
   (exec-path-from-shell-initialize))
 
 (use-package dired
+  :ensure nil
   :init
-  (let ((gls (executable-find "gls")))
-  (when gls
-    (setq insert-directory-program gls)
-    (setq dired-listing-switches "-laGh1v --group-directories-first")))
+  (when (executable-find "gls")
+    (setq insert-directory-program "gls" dired-use-ls-dired t)
+    (setq dired-listing-switches "-laGh1v --group-directories-first"))
   (put 'dired-find-alternate-file 'disabled nil)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 
@@ -271,16 +287,19 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package counsel
   :after (smex)
   :bind (("s-e" . ivy-switch-buffer)
-	 ("C-x b" . ivy-switch-buffer)
-	 :map ivy-minibuffer-map
-	 ("RET" . ivy-alt-done)
-	 ("C-RET" . ivy-immediate-done))
+	       ("C-x b" . ivy-switch-buffer)
+         ("s-p" . counsel-git)
+	       :map ivy-minibuffer-map
+	       ("RET" . ivy-alt-done)
+	       ("C-RET" . ivy-immediate-done))
   :hook (after-init . counsel-mode)
   :init
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (setq ivy-count-format "")
-  (setq ivy-virtual-abbreviate 'fullpath))
+  (setq ivy-virtual-abbreviate 'fullpath)
+  (setq counsel-rg-base-command
+      "rg -i -M 120 --no-heading --line-number --color never %s ."))
 
 (use-package minions
   :hook (after-init . minions-mode)
@@ -291,17 +310,22 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package mode-line-bell
   :hook (after-init . mode-line-bell-mode))
 
+(use-package anzu
+  :bind (([remap query-replace] . anzu-query-replace)
+         ([remap query-replace-regexp] . anzu-query-replace-regexp))
+  :config
+  (global-anzu-mode 1))
+
 (use-package color-theme-sanityinc-tomorrow
   :init
   ;; Use natural title bar in macOS
-  ;; (when *is-a-mac*
-  ;;   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  ;;   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
   (when *is-a-mac*
+    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+    (add-to-list 'default-frame-alist '(ns-appearance . dark))
     (set-mouse-color "white")))
 
 (use-package projectile
-  :bind (("s-p" . projectile-find-file))
+  ;; :bind (("s-p" . projectile-find-file))
   :hook (after-init . projectile-mode)
   :init
   (setq projectile-keymap-prefix (kbd "C-x p"))
@@ -329,18 +353,10 @@ Repeated invocations toggle between the two most recently open buffers."
         beacon-blink-duration 0.5
         beacon-blink-delay 0.5))
 
-(use-package elpy)
-
-(use-package js2-mode
-  :mode ("\\.js\\'" . js2-mode)
-  :init
-  ;; (setq js2-mode-show-parse-errors nil)
-  (setq js2-mode-show-strict-warnings nil)
-  :config
-  (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2"))))
-
 (use-package magit
-  :bind (("C-x g" . magit)))
+  :bind (("C-x g" . magit))
+  :init
+  (setq json-reformat:indent-width 2))
 
 (use-package fullframe
   :after (magit)
@@ -351,7 +367,8 @@ Repeated invocations toggle between the two most recently open buffers."
   :hook (prog-mode . company-mode)
   :bind (:map company-active-map
               ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)))
+              ("C-p" . company-select-previous))
+  :init)
 
 (use-package flycheck)
 
@@ -361,12 +378,43 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package diff-hl
   :hook (after-init . global-diff-hl-mode))
 
-(use-package prettier-js)
-
-(use-package pug-mode)
-
 ;; (use-package emojify
 ;;   :hook (after-init . global-emojify-mode))
+
+(use-package smart-mode-line
+  :hook (after-init . sml/setup)
+  :init
+  (setq sml/theme 'respectful)
+  (setq sml/no-confirm-load-theme t)
+  :config
+  (add-to-list 'sml/replacer-regexp-list '("^~/Developer/" ":DEV:")))
+
+(use-package deadgrep)
+
+(use-package prettier-js)
+
+;; (use-package elpy)
+
+(use-package js
+  :ensure nil
+  :init
+  (setq js-indent-level 2))
+
+(use-package js2-mode
+  :mode ("\\.js\\'" . js2-mode)
+  :init
+  ;; (setq js2-mode-show-parse-errors nil)
+  (setq js2-mode-show-strict-warnings nil)
+  ;; Config indenation
+  (setq js-indent-align-list-continuation nil)
+  (setq js2-bounce-indent-p t)
+  :config
+  (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2"))))
+
+(use-package json-mode
+  :mode ("\\.json\\'" . json-mode))
+
+(use-package pug-mode)
 
 ;; Use emacs as a server
 (require 'server)

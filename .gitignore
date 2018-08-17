@@ -1,8 +1,18 @@
-.emacs.desktop
-.emacs.desktop.lock
-/elpa-*
-custom.el
-history
-projectile-bookmarks.eld
+# cache folders
 savefile/
 var/
+auto-save-list/
+backups/
+/elpa-*
+
+custom.el
+
+# desktop
+.emacs.desktop
+.emacs.desktop.lock
+
+# projectile
+projectile-bookmarks.eld
+projectile.cache
+
+smex-items
