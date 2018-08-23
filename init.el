@@ -9,8 +9,8 @@
 (defconst samuel-savefile-dir (expand-file-name "savefile" user-emacs-directory))
 
 (when *is-a-mac*
-  (setq mac-command-modifier 'super)
-  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta)
   (global-set-key (kbd "s-s") 'save-buffer)
   (global-set-key (kbd "s-c") 'kill-ring-save)
   (global-set-key (kbd "s-v") 'yank)
@@ -97,8 +97,8 @@
 ;; indentation width -- eg. c-basic-offset: use that to adjust your
 ;; personal indentation width, while maintaining the style (and
 ;; meaning) of any files you load.
-(setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
-(setq-default tab-width 2)            ;; but maintain correct appearance
+(setq-default indent-tabs-mode nil ;; don't use tabs to indent
+              tab-width 2)         ;; but maintain correct appearance
 
 ;; Newline at end of file
 (setq require-final-newline t)
@@ -269,18 +269,18 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package uniquify
   :ensure nil
   :config
-  (setq uniquify-buffer-name-style 'forward)
-  (setq uniquify-separator "/")
-  ;; rename after killing uniquified
-  (setq uniquify-after-kill-buffer-p t)
-  ;; don't muck with special buffers
-  (setq uniquify-ignore-buffers-re "^\\*"))
+  (setq uniquify-buffer-name-style 'forward
+        uniquify-separator "/"
+        ;; rename after killing uniquified
+        uniquify-after-kill-buffer-p t
+        ;; don't muck with special buffers
+        uniquify-ignore-buffers-re "^\\*"))
 
 (use-package which-key
   :hook (after-init . which-key-mode)
   :init
-  (setq which-key-popup-type 'side-window)
-  (setq which-key-side-window-max-height 0.2))
+  (setq which-key-popup-type 'side-window
+        which-key-side-window-max-height 0.2))
 
 (use-package smex)
 
@@ -294,12 +294,11 @@ Repeated invocations toggle between the two most recently open buffers."
 	       ("C-RET" . ivy-immediate-done))
   :hook (after-init . counsel-mode)
   :init
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-count-format "")
-  (setq ivy-virtual-abbreviate 'fullpath)
-  (setq counsel-rg-base-command
-      "rg -i -M 120 --no-heading --line-number --color never %s ."))
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+        ivy-count-format ""
+        ivy-virtual-abbreviate 'fullpath
+        counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never %s ."))
 
 (use-package minions
   :hook (after-init . minions-mode)
@@ -328,9 +327,9 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; :bind (("s-p" . projectile-find-file))
   :hook (after-init . projectile-mode)
   :init
-  (setq projectile-keymap-prefix (kbd "C-x p"))
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-enable-caching nil))
+  (setq projectile-keymap-prefix (kbd "C-x p")
+        projectile-completion-system 'ivy
+        projectile-enable-caching nil))
 
 (use-package crux
   :bind (("s-j" . crux-top-join-line)
@@ -384,8 +383,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package smart-mode-line
   :hook (after-init . sml/setup)
   :init
-  (setq sml/theme 'respectful)
-  (setq sml/no-confirm-load-theme t)
+  (setq sml/theme 'respectful
+        sml/no-confirm-load-theme t)
   :config
   (add-to-list 'sml/replacer-regexp-list '("^~/Developer/" ":DEV:")))
 
@@ -404,10 +403,10 @@ Repeated invocations toggle between the two most recently open buffers."
   :mode ("\\.js\\'" . js2-mode)
   :init
   ;; (setq js2-mode-show-parse-errors nil)
-  (setq js2-mode-show-strict-warnings nil)
-  ;; Config indenation
-  (setq js-indent-align-list-continuation nil)
-  (setq js2-bounce-indent-p t)
+  (setq js2-mode-show-strict-warnings nil
+        ;; Config indenation
+        js-indent-align-list-continuation nil
+        js2-bounce-indent-p t)
   :config
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2"))))
 
