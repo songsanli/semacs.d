@@ -114,6 +114,9 @@
 ;; Repeating C-SPC after popping mark pops it again
 (setq set-mark-command-repeat-pop t)
 
+;; Improve handling of long lines
+(setq-default bidi-display-reordering nil)
+
 ;; Movement function: move cursor to punctuation
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
 (setq xah-punctuation-regex "[\\!\?\"\.'#$%&*+,/:;<=>@^`|~]+")
@@ -279,8 +282,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package which-key
   :hook (after-init . which-key-mode)
   :init
-  (setq which-key-popup-type 'side-window
-        which-key-side-window-max-height 0.2))
+  (setq which-key-side-window-max-height 0.2))
 
 (use-package smex)
 
@@ -388,16 +390,25 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (add-to-list 'sml/replacer-regexp-list '("^~/Developer/" ":DEV:")))
 
-(use-package deadgrep)
+(use-package deadgrep
+  :bind ("s-F" . deadgrep))
+
+(use-package editorconfig
+  :hook (after-init . editorconfig-mode))
 
 (use-package prettier-js)
 
 ;; (use-package elpy)
 
+(use-package css-mode
+  :ensure nil
+  :init
+  (setq-default css-indent-offset 2))
+
 (use-package js
   :ensure nil
   :init
-  (setq js-indent-level 2))
+  (setq-default js-indent-level 2))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode)
