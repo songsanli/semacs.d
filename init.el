@@ -114,6 +114,9 @@
 ;; Repeating C-SPC after popping mark pops it again
 (setq set-mark-command-repeat-pop t)
 
+;; Display empty lines
+(setq-default indicate-empty-lines t)
+
 ;; Improve handling of long lines
 (setq-default bidi-display-reordering nil)
 
@@ -425,6 +428,8 @@ Repeated invocations toggle between the two most recently open buffers."
   :mode ("\\.json\\'" . json-mode))
 
 (use-package pug-mode)
+
+(use-package fish-mode)
 
 ;; Use emacs as a server
 (require 'server)
