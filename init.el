@@ -359,6 +359,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package magit
   :bind (("C-x g" . magit))
+  :hook (magit-process-mode . goto-address-mode)
   :init
   (setq json-reformat:indent-width 2))
 
