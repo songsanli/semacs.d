@@ -425,6 +425,8 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2"))))
 
+(use-package rjsx-mode)
+
 (use-package json-mode
   :mode ("\\.json\\'" . json-mode))
 
