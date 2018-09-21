@@ -179,13 +179,14 @@ Repeated invocations toggle between the two most recently open buffers."
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
        (proto (if no-ssl "http" "https")))
-  ;; (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  (add-to-list 'package-archives (cons "melpa-cn" (concat proto "://elpa.emacs-china.org/melpa/")) t)
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;; (add-to-list 'package-archives (cons "melpa-cn" (concat proto "://elpa.emacs-china.org/melpa/")) t)
   ;; (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
-    ;; (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))
-    (add-to-list 'package-archives '("gnu-cn" . (concat proto "://elpa.emacs-china.org/gnu/")))))
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))
+    ;; (add-to-list 'package-archives '("gnu-cn" . (concat proto "://elpa.emacs-china.org/gnu/")))
+    ))
 (setq package-enable-at-startup nil)
 (package-initialize)
 (unless (package-installed-p 'use-package)
@@ -254,9 +255,9 @@ Repeated invocations toggle between the two most recently open buffers."
   :after ibuffer
   :config
   (add-hook 'ibuffer-hook (lambda ()
-			                      (ibuffer-vc-set-filter-groups-by-vc-root)
-			                      (unless (eq ibuffer-sorting-mode 'filename/process)
-			                        (ibuffer-do-sort-by-filename/process)))))
+                            (ibuffer-vc-set-filter-groups-by-vc-root)
+                            (unless (eq ibuffer-sorting-mode 'filename/process)
+                              (ibuffer-do-sort-by-filename/process)))))
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
@@ -281,6 +282,18 @@ Repeated invocations toggle between the two most recently open buffers."
         uniquify-after-kill-buffer-p t
         ;; don't muck with special buffers
         uniquify-ignore-buffers-re "^\\*"))
+
+(use-package whitespace
+  :ensure nil
+  :init
+  (setq whitespace-style (quote (face spaces tabs newline space-mark tab-mark newline-mark)))
+  (setq whitespace-display-mappings
+        ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
+        '(
+          (space-mark 32 [183] [46]) ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+          (newline-mark 10 [182 10]) ; LINE FEED,
+          (tab-mark 9 [8677 9] [92 9]) ; tab
+          )))
 
 (use-package which-key
   :hook (after-init . which-key-mode)

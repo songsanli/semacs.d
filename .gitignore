@@ -6,6 +6,7 @@ backups/
 /elpa-*
 
 custom.el
+SessionDesktop.el
 
 # desktop
 .emacs.desktop
