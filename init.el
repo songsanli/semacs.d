@@ -430,10 +430,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode)
   :init
-  ;; (setq js2-mode-show-parse-errors nil)
-  (setq js2-mode-show-strict-warnings nil
-        ;; Config indenation
-        js-indent-align-list-continuation nil
+  ;; Turn off js2 mode errors & warnings
+  (setq js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil)
+  ;; Config indenation
+  (setq js-indent-align-list-continuation nil
         js2-bounce-indent-p t)
   :config
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2"))))
