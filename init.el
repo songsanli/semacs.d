@@ -20,7 +20,7 @@
 ;; Change the default font for the current frame, as well as future frames
 (if (member "Operator Mono" (font-family-list))
     (progn
-      (add-to-list 'default-frame-alist '(font . "Operator Mono-16")))
+      (add-to-list 'default-frame-alist '(font . "Operator Mono-15")))
   (if (member "Iosevka Term SS08" (font-family-list))
       (progn
         (set-face-attribute 'default nil :font "Iosevka Term SS08-16")
@@ -357,6 +357,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
+
+(use-package move-text
+  :config
+  (move-text-default-bindings))
 
 (use-package avy
   :bind (("C-;" . avy-goto-char-timer))
