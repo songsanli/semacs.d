@@ -23,8 +23,8 @@
       (add-to-list 'default-frame-alist '(font . "Operator Mono-15")))
   (if (member "Iosevka Term SS08" (font-family-list))
       (progn
-        (set-face-attribute 'default nil :font "Iosevka Term SS08-16")
-        (set-frame-font "Iosevka Term SS08-16" nil t)
+        (set-face-attribute 'default nil :font "Iosevka Term SS08-15")
+        (set-frame-font "Iosevka Term SS08-15" nil t)
         (when (member "Sarasa Term SC" (font-family-list))
           (dolist (charset '(kana han cjk-misc bopomofo))
             (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))))))
@@ -341,6 +341,8 @@ Repeated invocations toggle between the two most recently open buffers."
     (add-to-list 'default-frame-alist '(ns-appearance . dark))
     (set-mouse-color "white")))
 
+(use-package dracula-theme)
+
 (use-package projectile
   ;; :bind (("s-p" . projectile-find-file))
   :hook (after-init . projectile-mode)
@@ -367,12 +369,15 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (setq avy-background t))
 
+(use-package ace-window
+  :bind("C-x o" . ace-window))
+
 (use-package beacon
   :hook (after-init . beacon-mode)
   :init
   (setq beacon-size 10
-        beacon-blink-duration 0.5
-        beacon-blink-delay 0.5))
+        beacon-blink-duration 0.3
+        beacon-blink-delay 0.3))
 
 (use-package magit
   :bind (("C-x g" . magit))
@@ -390,7 +395,9 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (:map company-active-map
               ("C-n" . company-select-next)
               ("C-p" . company-select-previous))
-  :init)
+  :init
+  (setq company-dabbrev-downcase nil
+        company-dabbrev-ignore-case nil))
 
 (use-package flycheck)
 
@@ -406,8 +413,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package smart-mode-line
   :hook (after-init . sml/setup)
   :init
-  (setq sml/theme 'respectful
-        sml/no-confirm-load-theme t)
+  (setq sml/theme nil)
+  (setq sml/no-confirm-load-theme t)
   :config
   (add-to-list 'sml/replacer-regexp-list '("^~/Developer/" ":DEV:")))
 
