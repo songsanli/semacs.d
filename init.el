@@ -18,9 +18,10 @@
   (global-set-key (kbd "s-r") 'query-replace-regexp))
 
 ;; Change the default font for the current frame, as well as future frames
-(if (member "Operator Mono" (font-family-list))
+(if (member "Operator Mono SSm" (font-family-list))
     (progn
-      (add-to-list 'default-frame-alist '(font . "Operator Mono-15")))
+      (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-14"))
+      (setq-default line-spacing 1))
   (if (member "Iosevka Term SS08" (font-family-list))
       (progn
         (set-face-attribute 'default nil :font "Iosevka Term SS08-15")
@@ -28,6 +29,7 @@
         (when (member "Sarasa Term SC" (font-family-list))
           (dolist (charset '(kana han cjk-misc bopomofo))
             (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))))))
+
 
 ;; reduce the frequency of garbage collection by making it happen on
 ;; each 50MB of allocated data (the default is on every 0.76MB)
@@ -341,8 +343,6 @@ Repeated invocations toggle between the two most recently open buffers."
     (add-to-list 'default-frame-alist '(ns-appearance . dark))
     (set-mouse-color "white")))
 
-(use-package dracula-theme)
-
 (use-package projectile
   ;; :bind (("s-p" . projectile-find-file))
   :hook (after-init . projectile-mode)
@@ -356,6 +356,12 @@ Repeated invocations toggle between the two most recently open buffers."
          ("C-k" . crux-smart-kill-line)
          ("s-D" . crux-duplicate-current-line-or-region)
          ("s-<backspace>" . crux-kill-line-backwards)))
+
+(use-package multiple-cursors
+  :bind (("s-d" . mc/mark-next-like-this)))
+
+(use-package whole-line-or-region
+  :hook (after-init . whole-line-or-region-global-mode))
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
@@ -402,7 +408,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package flycheck)
 
 (use-package yasnippet
-  :hook (prog-mode . yas-minor-mode))
+  :hook (prog-mode . yas-minor-mode)
+  :config
+  (yas-reload-all))
 
 (use-package diff-hl
   :hook (after-init . global-diff-hl-mode))
@@ -418,15 +426,16 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (add-to-list 'sml/replacer-regexp-list '("^~/Developer/" ":DEV:")))
 
-(use-package deadgrep
-  :bind ("s-F" . deadgrep))
+;; (use-package deadgrep
+;;   :bind ("s-F" . deadgrep))
+
+(use-package rg
+  :bind ("s-F" . rg-project)
+  :init
+  (setq rg-group-result t))
 
 (use-package editorconfig
   :hook (after-init . editorconfig-mode))
-
-(use-package prettier-js)
-
-;; (use-package elpy)
 
 (use-package css-mode
   :ensure nil
@@ -436,7 +445,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package js
   :ensure nil
   :init
-  (setq-default js-indent-level 2))
+  (setq-default js-indent-level 2
+                js-switch-indent-offset 2))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode)
@@ -450,7 +460,13 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (add-hook 'js2-mode-hook (lambda () (setq mode-name "JS2"))))
 
-(use-package rjsx-mode)
+(use-package prettier-js
+  :after (js2-mode exec-path-from-shell)
+  :hook (js2-mode . prettier-js-mode))
+
+(use-package rjsx-mode
+  :after (js2-mode)
+  :hook (js2-mode . rjsx-minor-mode))
 
 (use-package json-mode
   :mode ("\\.json\\'" . json-mode))
@@ -458,6 +474,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package pug-mode)
 
 (use-package fish-mode)
+
+(use-package emmet-mode
+  :hook js2-mode)
+
+(use-package web-mode)
 
 ;; Use emacs as a server
 (require 'server)
