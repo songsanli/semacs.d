@@ -20,7 +20,7 @@
 ;; Change the default font for the current frame, as well as future frames
 (if (member "Operator Mono SSm" (font-family-list))
     (progn
-      (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-14"))
+      (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-13"))
       (setq-default line-spacing 1))
   (if (member "Iosevka Term SS08" (font-family-list))
       (progn
@@ -309,6 +309,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :bind (("s-e" . ivy-switch-buffer)
 	       ("C-x b" . ivy-switch-buffer)
          ("s-p" . counsel-git)
+         ("s-x" . counsel-M-x)
 	       :map ivy-minibuffer-map
 	       ("RET" . ivy-alt-done)
 	       ("C-RET" . ivy-immediate-done))
@@ -432,7 +433,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package rg
   :bind ("s-F" . rg-project)
   :init
-  (setq rg-group-result t))
+  (setq rg-group-result t)
+  :config
+  (rg-define-toggle "--context 3" "m"))
 
 (use-package editorconfig
   :hook (after-init . editorconfig-mode))
@@ -467,6 +470,10 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package rjsx-mode
   :after (js2-mode)
   :hook (js2-mode . rjsx-minor-mode))
+
+(use-package js2-refactor
+  :after (js2-mode)
+  :hook (js2-mode . js2-refactor-mode))
 
 (use-package json-mode
   :mode ("\\.json\\'" . json-mode))
