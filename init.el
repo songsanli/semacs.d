@@ -319,6 +319,8 @@ Repeated invocations toggle between the two most recently open buffers."
         enable-recursive-minibuffers t
         ivy-count-format ""
         ivy-virtual-abbreviate 'fullpath
+        ivy-initial-inputs-alist '((Man-completion-table . "^")
+                                   (woman . "^"))
         counsel-rg-base-command "rg -i -M 120 --no-heading --line-number --color never %s ."))
 
 (use-package minions
