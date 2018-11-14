@@ -312,7 +312,7 @@ Repeated invocations toggle between the two most recently open buffers."
          ("s-x" . counsel-M-x)
 	       :map ivy-minibuffer-map
 	       ("RET" . ivy-alt-done)
-	       ("C-RET" . ivy-immediate-done))
+	       ("<C-return>" . ivy-immediate-done))
   :hook (after-init . counsel-mode)
   :init
   (setq ivy-use-virtual-buffers t
@@ -335,8 +335,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package anzu
   :bind (([remap query-replace] . anzu-query-replace)
          ([remap query-replace-regexp] . anzu-query-replace-regexp))
-  :config
-  (global-anzu-mode 1))
+  :hook (after-init . global-anzu-mode))
 
 (use-package color-theme-sanityinc-tomorrow
   :init
@@ -363,8 +362,12 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package multiple-cursors
   :bind (("s-d" . mc/mark-next-like-this)))
 
-(use-package whole-line-or-region
-  :hook (after-init . whole-line-or-region-global-mode))
+;; (use-package whole-line-or-region
+;;   :hook (after-init . whole-line-or-region-global-mode))
+
+(use-package easy-kill
+  :bind (([remap kill-ring-save] . easy-kill)
+         ([remap mark-sexp] . easy-mark)))
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
