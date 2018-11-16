@@ -2,4 +2,4 @@
 # name: use
 # key: use
 # --
-(use-package $1)
+(use-package $0)

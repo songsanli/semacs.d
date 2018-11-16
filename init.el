@@ -14,7 +14,9 @@
   (global-set-key (kbd "s-s") 'save-buffer)
   (global-set-key (kbd "s-c") 'kill-ring-save)
   (global-set-key (kbd "s-v") 'yank)
+  (define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill)
   (global-set-key (kbd "s-k") 'kill-this-buffer)
+  (global-set-key (kbd "s-b") 'bury-buffer)
   (global-set-key (kbd "s-r") 'query-replace-regexp))
 
 ;; Change the default font for the current frame, as well as future frames
@@ -381,6 +383,9 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   (setq avy-background t))
 
+(use-package ace-jump-buffer
+  :after (avy))
+
 (use-package ace-window
   :bind("C-x o" . ace-window))
 
@@ -420,6 +425,11 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package diff-hl
   :hook (after-init . global-diff-hl-mode))
+
+;; (use-package git-gutter
+;;   :hook (after-init . global-git-gutter-mode))
+
+;; (use-package git-gutter-fringe)
 
 ;; (use-package emojify
 ;;   :hook (after-init . global-emojify-mode))
