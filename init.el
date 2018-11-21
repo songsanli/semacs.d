@@ -20,18 +20,20 @@
   (global-set-key (kbd "s-r") 'query-replace-regexp))
 
 ;; Change the default font for the current frame, as well as future frames
-(if (member "Operator Mono SSm" (font-family-list))
-    (progn
-      (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-13"))
-      (setq-default line-spacing 1))
-  (if (member "Iosevka Term SS08" (font-family-list))
-      (progn
-        (set-face-attribute 'default nil :font "Iosevka Term SS08-15")
-        (set-frame-font "Iosevka Term SS08-15" nil t)
-        (when (member "Sarasa Term SC" (font-family-list))
-          (dolist (charset '(kana han cjk-misc bopomofo))
-            (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))))))
+;; (if (member "Operator Mono SSm" (font-family-list))
+;;     (progn
+;;       (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-13"))
+;;       (setq-default line-spacing 1))
+;;   (if (member "Iosevka Term SS08" (font-family-list))
+;;       (progn
+;;         (set-face-attribute 'default nil :font "Iosevka Term SS08-15")
+;;         (set-frame-font "Iosevka Term SS08-15" nil t)
+;;         (when (member "Sarasa Term SC" (font-family-list))
+;;           (dolist (charset '(kana han cjk-misc bopomofo))
+;;             (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))))))
 
+(add-to-list 'default-frame-alist '(font . "Operator Mono SSm-13"))
+(setq-default line-spacing 1)
 
 ;; reduce the frequency of garbage collection by making it happen on
 ;; each 50MB of allocated data (the default is on every 0.76MB)
@@ -123,6 +125,8 @@
 
 ;; Improve handling of long lines
 (setq-default bidi-display-reordering nil)
+
+(setq-default fill-column 80)
 
 ;; Movement function: move cursor to punctuation
 (defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
@@ -501,6 +505,23 @@ Repeated invocations toggle between the two most recently open buffers."
   :hook js2-mode)
 
 (use-package web-mode)
+
+;; objed use normal key to trigger itself map, such as C-n and
+;; C-p. I think this package is based on this assumption: When you key
+;; a move-related command, in most case you will key another
+;; move-related command instead of insert-realted command. I want to
+;; give it a try.
+(use-package objed
+  :hook (after-init . objed-mode))
+
+;; (use-package neotree
+;;   :init
+;;   (setq neo-theme 'nerd))
+
+;; (use-package treemacs
+;;   :init
+;;   (setq treemacs-no-png-images t))
+
 
 ;; Use emacs as a server
 (require 'server)
