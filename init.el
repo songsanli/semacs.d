@@ -202,6 +202,14 @@ Repeated invocations toggle between the two most recently open buffers."
   (package-install 'use-package))
 (setq use-package-always-ensure t)
 
+;; Handle custom-file
+;; Note: I put load of custom-file after (package-initialize) to ensure that
+;; package-selected-packages in custom-file will be updated when use-package
+;; install a new package.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 (use-package savehist
   :ensure nil
   :config
@@ -522,15 +530,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;   :init
 ;;   (setq treemacs-no-png-images t))
 
-
 ;; Use emacs as a server
 (require 'server)
 (unless (server-running-p)
   (server-start))
-
-;; Handle custom-file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
 
 ;;; init.el ends here
