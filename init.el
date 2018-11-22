@@ -14,12 +14,15 @@
   (global-set-key (kbd "s-s") 'save-buffer)
   (global-set-key (kbd "s-c") 'kill-ring-save)
   (global-set-key (kbd "s-v") 'yank)
-  (define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill)
   (global-set-key (kbd "s-k") 'kill-this-buffer)
   (global-set-key (kbd "s-b") 'bury-buffer)
-  (global-set-key (kbd "s-r") 'query-replace-regexp))
+  (global-set-key (kbd "s-r") 'query-replace-regexp)
+  (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
+  (global-set-key (kbd "M-r") 'backward-word)
+  (global-set-key (kbd "M-s") 'forward-word)
+  (define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill))
 
-;; Change the default font for the current frame, as well as future frames
+;; change the default font for the current frame, as well as future frames
 ;; (if (member "Operator Mono SSm" (font-family-list))
 ;;     (progn
 ;;       (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-13"))
@@ -32,6 +35,7 @@
 ;;           (dolist (charset '(kana han cjk-misc bopomofo))
 ;;             (set-fontset-font t charset (font-spec :family "Sarasa Term SC")))))))
 
+;; Config font
 (add-to-list 'default-frame-alist '(font . "Operator Mono SSm-13"))
 (setq-default line-spacing 1)
 
