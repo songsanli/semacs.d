@@ -18,8 +18,6 @@
   (global-set-key (kbd "s-b") 'bury-buffer)
   (global-set-key (kbd "s-r") 'query-replace-regexp)
   (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
-  (global-set-key (kbd "M-r") 'backward-word)
-  (global-set-key (kbd "M-s") 'forward-word)
   (define-key isearch-mode-map (kbd "s-v") 'isearch-yank-kill))
 
 ;; change the default font for the current frame, as well as future frames
