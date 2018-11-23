@@ -524,13 +524,18 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package objed
   :hook (after-init . objed-mode))
 
-;; (use-package neotree
-;;   :init
-;;   (setq neo-theme 'nerd))
+(use-package markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 
-;; (use-package treemacs
-;;   :init
-;;   (setq treemacs-no-png-images t))
+(use-package tide
+  :config
+  (add-hook 'typescript-mode-hook (lambda ()
+                                    (setq mode-name "TypeScript")
+                                    (tide-setup)
+                                    (tide-hl-identifier-mode +1))))
 
 ;; Use emacs as a server
 (require 'server)
