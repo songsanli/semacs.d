@@ -378,13 +378,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package multiple-cursors
   :bind (("s-d" . mc/mark-next-like-this)))
 
-;; (use-package whole-line-or-region
-;;   :hook (after-init . whole-line-or-region-global-mode))
-
-(use-package easy-kill
-  :bind (([remap kill-ring-save] . easy-kill)
-         ([remap mark-sexp] . easy-mark)))
-
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
@@ -395,7 +388,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package avy
   :bind (("C-;" . avy-goto-char-timer))
   :config
-  (setq avy-background t))
+  (setq avy-background nil))
 
 (use-package ace-jump-buffer
   :after (avy))
@@ -439,14 +432,6 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (use-package diff-hl
   :hook (after-init . global-diff-hl-mode))
-
-;; (use-package git-gutter
-;;   :hook (after-init . global-git-gutter-mode))
-
-;; (use-package git-gutter-fringe)
-
-;; (use-package emojify
-;;   :hook (after-init . global-emojify-mode))
 
 (use-package smart-mode-line
   :hook (after-init . sml/setup)
@@ -521,8 +506,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; a move-related command, in most case you will key another
 ;; move-related command instead of insert-realted command. I want to
 ;; give it a try.
-(use-package objed
-  :hook (after-init . objed-mode))
+;;
+;; Things I feel uncomfortable:
+;; - C-e will change mode to objed-mode, which makes me feel unconvenient
+;;   because I prefer insert chars after C-e
+;; (use-package objed
+;;   :hook (after-init . objed-mode))
 
 (use-package markdown-mode
   :mode (("README\\.md\\'" . gfm-mode)
