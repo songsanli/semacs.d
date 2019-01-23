@@ -3,6 +3,9 @@
 (tool-bar-mode -1)
 (toggle-scroll-bar -1)
 
+;; Produce backtraces when errors occur
+(setq debug-on-error t)
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 ;; Add global consts
@@ -17,6 +20,7 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
+(require 'init-utils)
 (require 'init-default-keybindings)
 
 ;; Config *scratch* buffer
@@ -307,7 +311,8 @@ Version 2017-09-01"
 (use-package avy
   :bind (("C-;" . avy-goto-char-timer))
   :config
-  (setq avy-background nil))
+  (setq avy-background nil
+        avy-all-windows t))
 
 (use-package ace-jump-buffer
   :after (avy))

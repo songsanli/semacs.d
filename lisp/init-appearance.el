@@ -59,4 +59,10 @@
     turn-on-adaptive-wrap-prefix-mode)
   (global-adaptive-wrap-prefix-mode 1))
 
+(use-package symbol-overlay
+  :hook ((prog-mode html-mode yaml-mode conf-mode) . symbol-overlay-mode)
+  :bind (("M-i" . symbol-overlay-put)
+         ("M-n" . symbol-overlay-jump-next)
+         ("M-p" . symbol-overlay-jump-prev)))
+
 (provide 'init-appearance)
